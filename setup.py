@@ -2,7 +2,9 @@ from distutils.core import setup, Extension
 
 setup(
         name='xlocale',
-        ext_modules=[Extension('xlocale', ['xlocale.c'])],
+        ext_modules=[Extension('xlocale', [
+            'xlocale.c',
+            ])],
         classifiers=[
             'Intended Audience :: Developers',
             'License :: DFSG approved',

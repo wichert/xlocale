@@ -1,5 +1,7 @@
 #include <Python.h>
+#include <structseq.h>
 #include <xlocale.h>
+#include "localeconv.h"
 
 static PyObject *LanguageError;
 static PyTypeObject LocaleType;
@@ -98,6 +100,8 @@ static PyObject* Locale_name(Locale* self, PyObject* mask) {
 		return PyString_FromString(name);
 }
 
+#include "localeconv.c"
+
 
 static PyMethodDef Locale_methods[] = {
 	{"current_locale", (PyCFunction)Locale_current_locale,
@@ -107,6 +111,8 @@ static PyMethodDef Locale_methods[] = {
 		"Get locale name for a specified category."},
 	{"use", (PyCFunction)Locale_use, METH_NOARGS,
 	 	"Switch the current thread to this locale."},
+	{"lconv", (PyCFunction)Locale_localeconv, METH_NOARGS,
+		"Return locale conventions"},
 	{NULL},
 };
 
@@ -153,13 +159,7 @@ static PyTypeObject LocaleType = {
 };
 
 
-PyMODINIT_FUNC
-initxlocale(void) {
-	PyObject *module;
-
-	if ((module=Py_InitModule("xlocale", LanguageMethods))==NULL)
-		return;
-
+void init_xlocale(PyObject* module) {
 	PyModule_AddIntConstant(module, "LC_COLLATE_MASK", LC_COLLATE_MASK);
 	PyModule_AddIntConstant(module, "LC_CTYPE_MASK", LC_CTYPE_MASK);
 	PyModule_AddIntConstant(module, "LC_MESSAGES_MASK", LC_MESSAGES_MASK);
@@ -176,5 +176,17 @@ initxlocale(void) {
 		return;
 	Py_INCREF(&LocaleType);
 	PyModule_AddObject(module, "Locale", (PyObject*)&LocaleType);
+}
+
+
+PyMODINIT_FUNC
+initxlocale(void) {
+	PyObject *module;
+
+	if ((module=Py_InitModule("xlocale", LanguageMethods))==NULL)
+		return;
+
+	init_xlocale(module);
+	init_localconv(module);
 }
 
