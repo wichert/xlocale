@@ -103,9 +103,35 @@ static void _seq_set_string(PyObject* seq, locale_t loc, ssize_t index, const ch
 
 
 static void _seq_set_int(PyObject* seq, locale_t loc, ssize_t index, char data) {
-	PyStructSequence_SET_ITEM(seq, index, PyInt_From_Size_t(data));
+	PyObject* item = PyInt_FromSize_t(data);
+
+	if (item!=NULL)
+		PyStructSequence_SET_ITEM(seq, index, item);
 }
 
+
+static void _seq_set_grouping(PyObject* seq, locale_t loc, ssize_t index, const char* data) {
+	PyObject* groups = PyList_New(0);;
+
+	if (groups==NULL)
+		return;
+
+	if (*data) {
+		int i = -1;
+		do {
+			i++;
+			PyObject* item = PyInt_FromLong(data[i]);
+			if (item==NULL)
+				break;
+			if (PyList_Append(groups, item)==-1) {
+				Py_DECREF(item);
+				Py_DECREF(groups);
+				return;
+			}
+		} while (data[i] && data[i]!=CHAR_MAX);
+	}
+	PyStructSequence_SET_ITEM(seq, index, groups);
+}
 
 
 static PyObject* Locale_localeconv(Locale* self) {
@@ -114,11 +140,11 @@ static PyObject* Locale_localeconv(Locale* self) {
 
 	_seq_set_string(result, self->locale, 0, lc->decimal_point);
 	_seq_set_string(result, self->locale, 1, lc->thousands_sep);
-	// grouping
+	_seq_set_grouping(result, self->locale, 2, lc->grouping);
 	_seq_set_string(result, self->locale, 3, lc->int_curr_symbol);
 	_seq_set_string(result, self->locale, 4, lc->currency_symbol);
 	_seq_set_string(result, self->locale, 5, lc->mon_thousands_sep);
-	// mon_grouping
+	_seq_set_grouping(result, self->locale, 6, lc->mon_grouping);
 	_seq_set_string(result, self->locale, 7, lc->positive_sign);
 	_seq_set_string(result, self->locale, 8, lc->negative_sign);
 	_seq_set_int(result, self->locale, 9, lc->int_frac_digits);
