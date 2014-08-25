@@ -5,6 +5,13 @@ struct lconv* localeconv_l(locale_t loc) {
     uselocale(old);
     return result;
 }
+
+size_t mbstowcs_l(wchar_t *wcstr, const char *mbstr, size_t count, locale_t loc) {
+    locale_t old = uselocale(loc);
+    size_t result = mbstowcs(wcstr, mbstr, count);
+    uselocale(old);
+    return result;
+}
 #endif
 
 
