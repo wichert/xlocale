@@ -1,3 +1,12 @@
+#ifndef PLATFORM_BSD
+struct lconv* localeconv_l(locale_t loc) {
+    locale_t old = uselocale(loc);
+    struct lconv* result = localeconv();
+    uselocale(old);
+    return result;
+}
+#endif
+
 
 PyDoc_STRVAR(lconv__doc__,
 		"lconv: Result from localconv");

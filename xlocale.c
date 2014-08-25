@@ -1,7 +1,21 @@
 #include <Python.h>
 #include <structseq.h>
+#ifdef PLATFORM_BSD
 #include <xlocale.h>
+#else
+#include <locale.h>
+#endif
 #include "localeconv.h"
+
+#ifndef PLATFORM_BSD
+#include <string.h>
+const char *querylocale(int mask, locale_t loc)
+{
+	int type = ffs(mask) - 1;
+	/*TODO: return locale name */
+	return ("C");
+}
+#endif
 
 static PyObject *LanguageError;
 static PyTypeObject LocaleType;

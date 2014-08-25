@@ -1,9 +1,16 @@
+import sys
 from distutils.core import setup, Extension
+
+macros = []
+if sys.platform.startswith('freebsd') or sys.platform == 'darwin':
+    macros.append(('PLATFORM_BSD', '1'))
 
 setup(
         name='xlocale',
-        ext_modules=[Extension('xlocale', [
-            'xlocale.c',
+        ext_modules=[Extension('xlocale',
+            define_macros = macros,
+            sources = [
+                'xlocale.c',
             ])],
         classifiers=[
             'Intended Audience :: Developers',
