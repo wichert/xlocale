@@ -32,8 +32,7 @@ static PyObject* Locale_new(PyTypeObject* type, PyObject* args, PyObject* kwargs
 
 static void Locale_dealloc(Locale* self) {
 	if (self->locale!=LC_GLOBAL_LOCALE)
-		if (freelocale(self->locale)==-1)
-			PyErr_Warn(PyExc_Warning, "Error freeing locale object");
+		freelocale(self->locale);
 	self->ob_type->tp_free((PyObject*)self);
 }
 
