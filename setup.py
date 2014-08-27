@@ -3,7 +3,7 @@ from setuptools import setup
 from distutils.core import Extension
 
 
-version = '1.0dev'
+version = '1.0'
 
 
 macros = []
@@ -13,7 +13,8 @@ if sys.platform.startswith('freebsd') or sys.platform == 'darwin':
 setup(
         name='xlocale',
         version=version,
-        long_description=open('README.rst').read(),
+        long_description=open('README.rst').read() + '\n' +
+            open('changes.rst').read(),
         ext_modules=[Extension('xlocale',
             define_macros=macros, sources=['xlocale.c'])],
         classifiers=[
