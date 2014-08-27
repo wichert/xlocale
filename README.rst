@@ -95,12 +95,12 @@ Locale instances
 | frac_digits        | The number of digits after the decimal point in the    |
 |                    | locale style for currency values.                      |
 +--------------------+--------------------------------------------------------+
-| p_cs_precedes      | 1 if the currency symbol precedes the currency value   |
-|                    | for nonnegative values, 0 if it follows.               |
+| p_cs_precedes      | True if the currency symbol precedes the currency      |
+|                    | value for nonnegative values, False if it follows.     |
 +--------------------+--------------------------------------------------------+
-| p_sep_by_space     | 1 if a space is inserted between the currency symbol   |
-|                    | and the currency value for nonnegative values, 0       |
-|                    | otherwise.                                             |
+| p_sep_by_space     | True if a space is inserted between the currency       |
+|                    | symbol and the currency value for nonnegative values,  |
+|                    | False otherwise.                                       |
 +--------------------+--------------------------------------------------------+
 | n_cs_precedes      | Like p_cs_precedes but for negative values.            |
 +--------------------+--------------------------------------------------------+

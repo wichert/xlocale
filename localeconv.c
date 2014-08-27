@@ -50,11 +50,11 @@ static PyStructSequence_Field lconv_fields[] = {
 		"The number of digits after the decimal point in the local style\n"
 		"for currency values."},
 /*12 */	{"p_cs_precedes",
-		"1 if the currency symbol precedes the currency value for nonnegative\n"
-		"values, 0 if it follows."},
+		"True if the currency symbol precedes the currency value for nonnegative\n"
+		"values, False if it follows."},
 /*13 */	{"p_sep_by_space",
-		"1 if a space is inserted between the currency symbol and the currency\n"
-		"value for nonnegative values, 0 otherwise."},
+		"True if a space is inserted between the currency symbol and the currency\n"
+		"value for nonnegative values, False otherwise."},
 /*14 */	{"n_cs_precedes", "Like p_cs_precedes but for negative values."},
 /*15 */	{"n_sep_by_space", "Like p_sep_by_space but for negative values."},
 /*16 */	{"p_sign_posn",
@@ -118,6 +118,14 @@ static void _seq_set_string(PyObject* seq, locale_t loc, ssize_t index, const ch
 }
 
 
+static void _seq_set_bool(PyObject* seq, locale_t loc, ssize_t index, char data) {
+	PyObject* item = PyBool_FromLong(data);
+
+	if (item!=NULL)
+		PyStructSequence_SET_ITEM(seq, index, item);
+}
+
+
 static void _seq_set_int(PyObject* seq, locale_t loc, ssize_t index, char data) {
 	PyObject* item = PyInt_FromSize_t(data);
 
@@ -167,16 +175,16 @@ static PyObject* Locale_localeconv(Locale* self) {
 	_seq_set_string(result, self->locale, i++, lc->negative_sign);
 	_seq_set_int(result, self->locale, i++, lc->int_frac_digits);
 	_seq_set_int(result, self->locale, i++, lc->frac_digits);
-	_seq_set_int(result, self->locale, i++, lc->p_cs_precedes);
-	_seq_set_int(result, self->locale, i++, lc->p_sep_by_space);
+	_seq_set_bool(result, self->locale, i++, lc->p_cs_precedes);
+	_seq_set_bool(result, self->locale, i++, lc->p_sep_by_space);
 	_seq_set_int(result, self->locale, i++, lc->n_cs_precedes);
 	_seq_set_int(result, self->locale, i++, lc->n_sep_by_space);
 	_seq_set_int(result, self->locale, i++, lc->p_sign_posn);
 	_seq_set_int(result, self->locale, i++, lc->n_sign_posn);
-	_seq_set_int(result, self->locale, i++, lc->int_p_cs_precedes);
-	_seq_set_int(result, self->locale, i++, lc->int_n_cs_precedes);
-	_seq_set_int(result, self->locale, i++, lc->int_p_sep_by_space);
-	_seq_set_int(result, self->locale, i++, lc->int_n_sep_by_space);
+	_seq_set_bool(result, self->locale, i++, lc->int_p_cs_precedes);
+	_seq_set_bool(result, self->locale, i++, lc->int_n_cs_precedes);
+	_seq_set_bool(result, self->locale, i++, lc->int_p_sep_by_space);
+	_seq_set_bool(result, self->locale, i++, lc->int_n_sep_by_space);
 	_seq_set_int(result, self->locale, i++, lc->int_p_sign_posn);
 	_seq_set_int(result, self->locale, i++, lc->int_n_sign_posn);
 	assert(i==lconv_desc.n_in_sequence);
