@@ -1,5 +1,6 @@
 import sys
-from distutils.core import setup, Extension
+from setuptools import setup
+from distutils.core import Extension
 
 
 version = '1.0dev'
