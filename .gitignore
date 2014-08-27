@@ -1,4 +1,6 @@
-xlocale.so
+/xlocale.so
 /build
 /dist
 /setup.cfg
+*.sw[opq]
+.DS_Store
