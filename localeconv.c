@@ -26,11 +26,11 @@ static PyStructSequence_Field lconv_fields[] = {
 		"for currency values."},
 /* 2 */	{"grouping",
 		"The sizes of the groups of digits, except for currency values.\n\n"
-		"This is a pointer to a vector of integers, each of size char,\n"
-		"representing group size from low order digit groups to high order (right\n"
-		"to left). The list may be terminated with 0 or CHAR_MAX. If the list is\n"
-		"terminated with 0, the last group size before the 0 is repeated to\n"
-		"account for all the digits. If the list is terminated with CHAR_MAX,\n"
+		"This is a list of integers representing group size from low order\n"
+		"digit groups to high order (right to left). The list may be\n"
+		"terminated with 0 or CHAR_MAX. If the list is terminated with 0,\n"
+		"the last group size before the 0 is repeated to account for all\n"
+		"the digits. If the list is terminated with CHAR_MAX,\n"
 		"no more grouping is performed."},
 /* 3 */	{"int_curr_symbol", "The standardized international currency symbol."},
 /* 4 */	{"currency_symbol", "The local currency symbol."},
