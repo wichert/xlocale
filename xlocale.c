@@ -7,16 +7,6 @@
 #endif
 #include "localeconv.h"
 
-#ifndef PLATFORM_BSD
-#include <string.h>
-const char *querylocale(int mask, locale_t loc)
-{
-	int type = ffs(mask) - 1;
-	/*TODO: return locale name */
-	return ("C");
-}
-#endif
-
 static PyObject *LanguageError;
 static PyTypeObject LocaleType;
 
@@ -96,6 +86,7 @@ static PyObject* Locale_use(Locale* self) {
 }
 
 static PyObject* Locale_name(Locale* self, PyObject* mask) {
+#ifdef PLATFORM_BSD
 	if (!PyInt_Check(mask)) {
 		PyErr_SetString(PyExc_ValueError, "Mask must be an integer.");
 		return NULL;
@@ -111,6 +102,10 @@ static PyObject* Locale_name(Locale* self, PyObject* mask) {
 		Py_RETURN_NONE;
 	} else 
 		return PyString_FromString(name);
+#else
+	PyErr_SetString(PyExc_RuntimeError, "This OS does not support querylocalae()");
+	return NULL;
+#endif
 }
 
 #include "localeconv.c"
