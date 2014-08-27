@@ -1,10 +1,11 @@
-#include <Python.h>
-#include <structseq.h>
+#include <assert.h>
 #ifdef PLATFORM_BSD
 #include <xlocale.h>
 #else
 #include <locale.h>
 #endif
+#include <Python.h>
+#include <structseq.h>
 #include "localeconv.h"
 
 static PyObject *LanguageError;

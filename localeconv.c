@@ -152,32 +152,34 @@ static void _seq_set_grouping(PyObject* seq, locale_t loc, ssize_t index, const 
 
 static PyObject* Locale_localeconv(Locale* self) {
 	struct lconv* lc = localeconv_l(self->locale);
+	int i = 0;
 	PyObject* result = PyStructSequence_New(&LconvType);
 
-	_seq_set_string(result, self->locale, 0, lc->decimal_point);
-	_seq_set_string(result, self->locale, 1, lc->thousands_sep);
-	_seq_set_grouping(result, self->locale, 2, lc->grouping);
-	_seq_set_string(result, self->locale, 3, lc->int_curr_symbol);
-	_seq_set_string(result, self->locale, 4, lc->currency_symbol);
-	_seq_set_string(result, self->locale, 5, lc->mon_decimal_point);
-	_seq_set_string(result, self->locale, 6, lc->mon_thousands_sep);
-	_seq_set_grouping(result, self->locale, 7, lc->mon_grouping);
-	_seq_set_string(result, self->locale, 8, lc->positive_sign);
-	_seq_set_string(result, self->locale, 9, lc->negative_sign);
-	_seq_set_int(result, self->locale, 10, lc->int_frac_digits);
-	_seq_set_int(result, self->locale, 11, lc->frac_digits);
-	_seq_set_int(result, self->locale, 12, lc->p_cs_precedes);
-	_seq_set_int(result, self->locale, 13, lc->p_sep_by_space);
-	_seq_set_int(result, self->locale, 14, lc->n_cs_precedes);
-	_seq_set_int(result, self->locale, 15, lc->n_sep_by_space);
-	_seq_set_int(result, self->locale, 16, lc->p_sign_posn);
-	_seq_set_int(result, self->locale, 17, lc->n_sign_posn);
-	_seq_set_int(result, self->locale, 18, lc->int_p_cs_precedes);
-	_seq_set_int(result, self->locale, 19, lc->int_n_cs_precedes);
-	_seq_set_int(result, self->locale, 20, lc->int_p_sep_by_space);
-	_seq_set_int(result, self->locale, 21, lc->int_n_sep_by_space);
-	_seq_set_int(result, self->locale, 22, lc->int_p_sign_posn);
-	_seq_set_int(result, self->locale, 23, lc->int_n_sign_posn);
+	_seq_set_string(result, self->locale, i++, lc->decimal_point);
+	_seq_set_string(result, self->locale, i++, lc->thousands_sep);
+	_seq_set_grouping(result, self->locale, i++, lc->grouping);
+	_seq_set_string(result, self->locale, i++, lc->int_curr_symbol);
+	_seq_set_string(result, self->locale, i++, lc->currency_symbol);
+	_seq_set_string(result, self->locale, i++, lc->mon_decimal_point);
+	_seq_set_string(result, self->locale, i++, lc->mon_thousands_sep);
+	_seq_set_grouping(result, self->locale, i++, lc->mon_grouping);
+	_seq_set_string(result, self->locale, i++, lc->positive_sign);
+	_seq_set_string(result, self->locale, i++, lc->negative_sign);
+	_seq_set_int(result, self->locale, i++, lc->int_frac_digits);
+	_seq_set_int(result, self->locale, i++, lc->frac_digits);
+	_seq_set_int(result, self->locale, i++, lc->p_cs_precedes);
+	_seq_set_int(result, self->locale, i++, lc->p_sep_by_space);
+	_seq_set_int(result, self->locale, i++, lc->n_cs_precedes);
+	_seq_set_int(result, self->locale, i++, lc->n_sep_by_space);
+	_seq_set_int(result, self->locale, i++, lc->p_sign_posn);
+	_seq_set_int(result, self->locale, i++, lc->n_sign_posn);
+	_seq_set_int(result, self->locale, i++, lc->int_p_cs_precedes);
+	_seq_set_int(result, self->locale, i++, lc->int_n_cs_precedes);
+	_seq_set_int(result, self->locale, i++, lc->int_p_sep_by_space);
+	_seq_set_int(result, self->locale, i++, lc->int_n_sep_by_space);
+	_seq_set_int(result, self->locale, i++, lc->int_p_sign_posn);
+	_seq_set_int(result, self->locale, i++, lc->int_n_sign_posn);
+	assert(i==lconv_desc.n_in_sequence);
 
 	return result;
 }
