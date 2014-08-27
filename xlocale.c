@@ -75,7 +75,7 @@ static int Locale_init(Locale* self, PyObject* args, PyObject* kwargs) {
 
 
 static PyObject* Locale_current_locale(PyObject* cls) {
-	locale_t loc = duplocale(NULL);
+	locale_t loc = uselocale(NULL);
 	if (loc==NULL) {
 		PyErr_SetString(PyExc_RuntimeError, "Error getting current locale.");
 		return NULL;
