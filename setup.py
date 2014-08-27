@@ -1,17 +1,20 @@
 import sys
 from distutils.core import setup, Extension
 
+
+version = '1.0dev'
+
+
 macros = []
 if sys.platform.startswith('freebsd') or sys.platform == 'darwin':
     macros.append(('PLATFORM_BSD', '1'))
 
 setup(
         name='xlocale',
+        version=version,
+        long_description=open('README.rst').read(),
         ext_modules=[Extension('xlocale',
-            define_macros = macros,
-            sources = [
-                'xlocale.c',
-            ])],
+            define_macros=macros, sources=['xlocale.c'])],
         classifiers=[
             'Intended Audience :: Developers',
             'License :: DFSG approved',
@@ -22,4 +25,9 @@ setup(
             'Programming Language :: Python :: 2.7',
             'Topic :: Software Development :: Libraries :: Python Modules',
             ],
+        keywords='xlocale locale i18n l10n',
+        author='Wichert Akkerman',
+        author_email='wichert@wiggy.net',
+        url='https://github.com/wichert/xlocale',
+        license='BSD',
         )
