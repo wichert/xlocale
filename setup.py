@@ -3,7 +3,7 @@ from setuptools import setup
 from distutils.core import Extension
 
 
-version = '1.0'
+version = '1.1'
 
 
 macros = []

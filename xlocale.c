@@ -80,6 +80,10 @@ static PyObject* Locale_current_locale(PyObject* cls) {
 
 static PyObject* Locale_use(Locale* self) {
 	locale_t previous = uselocale(self->locale);
+	if (previous!=LC_GLOBAL_LOCALE)
+		// We must make a copy, otherwise we may try to free previous
+		// multiple times.
+		previous=duplocale(previous);
 	PyObject* result = (PyObject*)create_locale(&LocaleType, previous);
 	if (result==NULL)
 		freelocale(previous);
