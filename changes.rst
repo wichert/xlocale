@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.1 - Unreleased
----------------------
+1.1 - October 10, 2014
+----------------------
 
 - Fix a memory handling error in Locale.use() which could result in a segfault
   when using a locale instance multiple times.
