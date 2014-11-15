@@ -42,8 +42,7 @@ Locale instances
 ================
 
 `Locale.use()`
-  Switch the locale for the current thread. This will also return a Locale
-  instance for the previously active locale.
+  Switch the locale for the current thread.
 
 `Locale.name(mask)`
   Return the name for a locale category. ``mask`` is a bitmask of locale

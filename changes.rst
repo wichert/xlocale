@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.2 - November 15, 2014
+-----------------------
+
+- No longer return the current locale from Locale.use(). This created
+  unsolvable double free problems.
+
 1.1 - October 10, 2014
 ----------------------
 
