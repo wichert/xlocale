@@ -13,6 +13,7 @@ if sys.platform.startswith('freebsd') or sys.platform == 'darwin':
 setup(
         name='xlocale',
         version=version,
+        description='Python wrapper for xlocale',
         long_description=open('README.rst').read() + '\n' +
             open('changes.rst').read(),
         ext_modules=[Extension('xlocale',
