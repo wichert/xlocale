@@ -1,29 +1,28 @@
+defaults: &defaults
+  docker:
+  - image: circleci/python:3
+
 version: 2
 jobs:
   build:
-    docker:
-    - image: quay.io/pypa/manylinux1_x86_64
+    <<: *defaults
     steps:
     - checkout
+    - setup_remote_docker
     - run:
-        name: Compile wheels
+        name: Fetch manylinux docker image
         command: |
-          for PYBIN in /opt/python/*/bin; do
-              "${PYBIN}/pip" wheel . -w wheelhouse/
-          done
+          docker pull quay.io/pypa/manylinux1_x86_64
+          docker tag quay.io/pypa/manylinux1_x86_64 manylinux
     - run:
-        name: Bundle external shared libraries into the wheels
-        command: |
-          for whl in wheelhouse/*.whl; do
-            auditwheel repair "$whl" -w wheelhouse/
-          done
+        name: Build the wheels
+        command: docker run --rm -v $(pwd):/src manylinux /src/.circleci/build
     - persist_to_workspace:
         root: wheelhouse
         paths:
           - "*"
   upload:
-    docker:
-    - image: circleci/python:3
+    <<: *defaults
     steps:
     - attach_workspace:
         at: /tmp/workspace
