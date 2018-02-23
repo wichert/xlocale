@@ -46,7 +46,7 @@ workflows:
     - checkout
     - build:
         requires:
-          - build
+          - checkout
 
   release:
     jobs:
@@ -63,7 +63,7 @@ workflows:
           branches:
             ignore: /.*/
         requires:
-          - build
+          - checkout
 
     - upload:
         filters:
