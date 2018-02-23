@@ -38,7 +38,7 @@ static PyObject* Locale_new(PyTypeObject* type, PyObject* args, PyObject* kwargs
 static void Locale_dealloc(Locale* self) {
 	if (self->locale!=LC_GLOBAL_LOCALE)
 		freelocale(self->locale);
-	self->ob_type->tp_free((PyObject*)self);
+	Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 
@@ -189,10 +189,18 @@ PyMODINIT_FUNC
 initxlocale(void) {
 	PyObject *module;
 
-	if ((module=Py_InitModule("xlocale", LanguageMethods))==NULL)
+	if ((module=Py_InitModule("xlocale", LanguageMethods))==NULL) {
+#if PY_MAJOR_VERSION < 3	
 		return;
+#else
+		return NULL;
+#endif
+	}
 
 	init_xlocale(module);
 	init_localconv(module);
+#if PY_MAJOR_VERSION >= 3	
+	return module;
+#endif
 }
 
