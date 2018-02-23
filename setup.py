@@ -9,7 +9,8 @@ version = '1.2'
 macros = []
 if sys.platform.startswith('freebsd') or sys.platform == 'darwin':
     macros.append(('PLATFORM_BSD', '1'))
-
+elif 'linux' in sys.platform:
+    macros.append(('_GNU_SOURCE', ''))
 setup(
         name='xlocale',
         version=version,

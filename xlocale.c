@@ -190,10 +190,10 @@ initxlocale(void) {
 	PyObject *module;
 
 	if ((module=Py_InitModule("xlocale", LanguageMethods))==NULL) {
-#if PY_MAJOR_VERSION < 3	
-		return;
-#else
+#if PY_MAJOR_VERSION >= 3
 		return NULL;
+#else
+		return;
 #endif
 	}
 
