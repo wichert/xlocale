@@ -1,36 +1,56 @@
 defaults: &defaults
-  working_directory: ~/curvetips.api
+  docker:
+  - image: circleci/python:3
 
 version: 2
 jobs:
-  build:
+  checkout:
     <<: *defaults
+    steps:
+    - checkout
+    - persist_to_workspace:
+        root: .
+        paths:
+          - "*"
+
+  build:
     docker:
     - image: quay.io/pypa/manylinux1_x86_64
     steps:
-    - checkout
+    - attach_workspace:
+        at: /tmp/src
     - run:
-        name: Compile wheels
+        name: Build the wheels
         command: |
+          cd /tmp/src
           for PYBIN in /opt/python/*/bin; do
-              "${PYBIN}/pip" wheel . -w wheelhouse/
+            "${PYBIN}/pip" wheel . -w wheelhouse/
           done
     - run:
-        name: Bundle external shared libraries into the wheels
+        name: Audit and relabel the wheels
         command: |
+          cd /tmp/src
           for whl in wheelhouse/*.whl; do
             auditwheel repair "$whl" -w wheelhouse/
           done
     - persist_to_workspace:
-        root: wheelhouse
+        root: /tmp/src
         paths:
-          - "*"
+          - wheelhouse
+
   upload:
-    docker:
-    - image: circleci/python:3
+    <<: *defaults
     steps:
     - attach_workspace:
         at: /tmp/workspace
+    - run:
+        name: Install twine
+        command: sudo pip install twine
+    - run:
+        name: Upload the wheels
+        command: 
+          twine upload -u $PYPI_USER -p "$PYPI_PASSWORD" /tmp/workspace/wheelhouse/*.whl
+
 
 
 workflows:
@@ -38,24 +58,33 @@ workflows:
 
   devel:
     jobs:
+    - checkout
     - build:
-        context: org-global
+        requires:
+          - checkout
 
   release:
     jobs:
-    - build:
-        context: org-global
+    - checkout:
         filters:
           tags:
-            only: /^v.*/
+            only: /^.*/
           branches:
             ignore: /.*/
-
-    - upload:
-        context: org-global
+    - build:
         filters:
           tags:
-            only: /^release.*/
+            only: /^.*/
+          branches:
+            ignore: /.*/
+        requires:
+          - checkout
+
+    - upload:
+        context: pypi
+        filters:
+          tags:
+            only: /^.*/
           branches:
             only: /^v.*/
         requires:
