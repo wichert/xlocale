@@ -20,6 +20,12 @@ jobs:
     - attach_workspace:
         at: /tmp/src
     - run:
+        name: Build source release
+        command: |
+          cd /tmp/src
+          PYTHON=$(ls /opt/python/*/bin/python | head -1)
+          $PYTHON setup.py sdist
+    - run:
         name: Build the wheels
         command: |
           cd /tmp/src
@@ -36,7 +42,8 @@ jobs:
     - persist_to_workspace:
         root: /tmp/src
         paths:
-          - wheelhouse
+          - wheelhouse/*manylinux*
+          - dist/*.tar.gz
 
   upload:
     <<: *defaults
@@ -47,9 +54,9 @@ jobs:
         name: Install twine
         command: sudo pip install twine
     - run:
-        name: Upload the wheels
+        name: Upload to PyPI
         command: 
-          twine upload -u $PYPI_USER -p "$PYPI_PASSWORD" /tmp/workspace/wheelhouse/*.whl
+          twine upload -u $PYPI_USER -p "$PYPI_PASSWORD" /tmp/workspace/wheelhouse/*.whl /tmp/workspace/dist/*.tar.gz
 
 
 
