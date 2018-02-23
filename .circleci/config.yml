@@ -1,10 +1,6 @@
-defaults: &defaults
-  working_directory: ~/curvetips.api
-
 version: 2
 jobs:
   build:
-    <<: *defaults
     docker:
     - image: quay.io/pypa/manylinux1_x86_64
     steps:
@@ -38,8 +34,7 @@ workflows:
 
   devel:
     jobs:
-    - build:
-        context: org-global
+    - build
 
   release:
     jobs:
@@ -47,7 +42,7 @@ workflows:
         context: org-global
         filters:
           tags:
-            only: /^v.*/
+            only: /^.*/
           branches:
             ignore: /.*/
 
@@ -55,7 +50,7 @@ workflows:
         context: org-global
         filters:
           tags:
-            only: /^release.*/
+            only: /^.*/
           branches:
             only: /^v.*/
         requires:
