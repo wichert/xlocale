@@ -34,7 +34,7 @@ jobs:
             auditwheel repair "$whl" -w wheelhouse/
           done
     - persist_to_workspace:
-        root: .
+        root: /tmp/src
         paths:
           - wheelhouse
 
