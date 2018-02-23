@@ -14,19 +14,25 @@ jobs:
           - "*"
 
   build:
-    <<: *defaults
+    docker:
+    - image: quay.io/pypa/manylinux1_x86_64
     steps:
     - attach_workspace:
         at: /tmp/src
-    - setup_remote_docker
-    - run:
-        name: Fetch manylinux docker image
-        command: |
-          docker pull quay.io/pypa/manylinux1_x86_64
-          docker tag quay.io/pypa/manylinux1_x86_64 manylinux
     - run:
         name: Build the wheels
-        command: docker run --rm -v /tmp/src:/src manylinux /src/.circleci/build
+        command: |
+          cd /tmp/src
+          for PYBIN in /opt/python/*/bin; do
+            "${PYBIN}/pip" wheel . -w wheelhouse/
+          done
+    - run:
+        name: Audit and relabel the wheels
+        command: |
+          cd /tmp/src
+          for whl in wheelhouse/*.whl; do
+            auditwheel repair "$whl" -w wheelhouse/
+          done
     - persist_to_workspace:
         root: .
         paths:
