@@ -3,7 +3,7 @@ is particularly useful to set the locale per-thread.
 
 
 Normally you use the `locale.setlocale
-<https://docs.python.org/2/library/locale.html#locale.setlocale>`_
+<https://docs.python.org/3/library/locale.html#locale.setlocale>`_
 function to change the locale for the entire process::
 
     import locale
