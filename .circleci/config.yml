@@ -4,11 +4,19 @@ defaults: &defaults
 
 version: 2
 jobs:
-  build:
-    machine:
-      image: circleci/python:3
+  checkout:
     steps:
     - checkout
+    - persist_to_workspace:
+        root: .
+        paths:
+          - "*"
+
+  build:
+    <<: *defaults
+    steps:
+    - attach_workspace:
+        at: /tmp/src
     - setup_remote_docker
     - run:
         name: Fetch manylinux docker image
@@ -17,11 +25,12 @@ jobs:
           docker tag quay.io/pypa/manylinux1_x86_64 manylinux
     - run:
         name: Build the wheels
-        command: docker run --rm -v $(pwd):/src manylinux /src/.circleci/build
+        command: docker run --rm -v /tmp/src:/src manylinux /src/.circleci/build
     - persist_to_workspace:
-        root: wheelhouse
+        root: .
         paths:
-          - "*"
+          - wheelhouse
+
   upload:
     <<: *defaults
     steps:
@@ -34,20 +43,29 @@ workflows:
 
   devel:
     jobs:
-    - build
+    - checkout
+    - build:
+        requires:
+          - build
 
   release:
     jobs:
-    - build:
-        context: org-global
+    - checkout:
         filters:
           tags:
             only: /^.*/
           branches:
             ignore: /.*/
+    - build:
+        filters:
+          tags:
+            only: /^.*/
+          branches:
+            ignore: /.*/
+        requires:
+          - build
 
     - upload:
-        context: org-global
         filters:
           tags:
             only: /^.*/
