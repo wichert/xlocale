@@ -1,0 +1,64 @@
+defaults: &defaults
+  working_directory: ~/curvetips.api
+
+version: 2
+jobs:
+  build:
+    <<: *defaults
+    docker:
+    - image: quay.io/pypa/manylinux1_x86_64
+    steps:
+    - checkout
+    - run:
+        name: Compile wheels
+        command: |
+          for PYBIN in /opt/python/*/bin; do
+              "${PYBIN}/pip" wheel . -w wheelhouse/
+          done
+    - run:
+        name: Bundle external shared libraries into the wheels
+        command: |
+          for whl in wheelhouse/*.whl; do
+            auditwheel repair "$whl" -w wheelhouse/
+          done
+    - persist_to_workspace:
+        root: wheelhouse
+        paths:
+          - "*"
+  upload:
+    docker:
+    - image: circleci/python:3
+    steps:
+    - attach_workspace:
+        at: /tmp/workspace
+
+
+workflows:
+  version: 2
+
+  devel:
+    jobs:
+    - build:
+        context: org-global
+
+  release:
+    jobs:
+    - build:
+        context: org-global
+        filters:
+          tags:
+            only: /^v.*/
+          branches:
+            ignore: /.*/
+
+    - upload:
+        context: org-global
+        filters:
+          tags:
+            only: /^release.*/
+          branches:
+            only: /^v.*/
+        requires:
+          - build
+
+
