@@ -5,7 +5,8 @@ defaults: &defaults
 version: 2
 jobs:
   build:
-    <<: *defaults
+    machine:
+      image: circleci/python:3
     steps:
     - checkout
     - setup_remote_docker
