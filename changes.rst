@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.3 - February 23, 2018
------------------------
+1.3.1 - February 23, 2018
+-------------------------
 
 - Add Python 3 support.
 - Add manylinux support.
