@@ -127,8 +127,11 @@ static void _seq_set_bool(PyObject* seq, locale_t loc, ssize_t index, char data)
 
 
 static void _seq_set_int(PyObject* seq, locale_t loc, ssize_t index, char data) {
+#if PY_MAJOR_VERSION >= 3
+	PyObject* item = PyLong_FromSize_t(data);
+#else
 	PyObject* item = PyInt_FromSize_t(data);
-
+#endif
 	if (item!=NULL)
 		PyStructSequence_SET_ITEM(seq, index, item);
 }
@@ -144,7 +147,12 @@ static void _seq_set_grouping(PyObject* seq, locale_t loc, ssize_t index, const 
 		int i = -1;
 		do {
 			i++;
+
+#if PY_MAJOR_VERSION >= 3
+			PyObject* item = PyLong_FromLong(data[i]);
+#else
 			PyObject* item = PyInt_FromLong(data[i]);
+#endif
 			if (item==NULL)
 				break;
 			if (PyList_Append(groups, item)==-1) {
