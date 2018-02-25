@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.3.4 - February 25, 2018
+-------------------------
+
+- More Python 3 compilation fixes.
+
+
 1.3.3 - February 25, 2018
 -------------------------
 

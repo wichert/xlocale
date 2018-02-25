@@ -11,10 +11,11 @@
 static PyObject *LanguageError;
 static PyTypeObject LocaleType;
 
+#if PY_MAJOR_VERSION < 3
 static PyMethodDef LanguageMethods[] = {
 	{NULL, NULL, 0, NULL},
 };
-
+#endif
 
 typedef struct {
 	PyObject_HEAD
@@ -86,12 +87,21 @@ static PyObject* Locale_use(Locale* self) {
 
 static PyObject* Locale_name(Locale* self, PyObject* mask) {
 #ifdef PLATFORM_BSD
+
+#if PY_MAJOR_VERSION >= 3
+	if (!PyLong_Check(mask)) {
+#else
 	if (!PyInt_Check(mask)) {
+#endif
 		PyErr_SetString(PyExc_ValueError, "Mask must be an integer.");
 		return NULL;
 	}
 
+#if PY_MAJOR_VERSION >= 3
+	int m = (int)PyLong_AsSsize_t(mask);
+#else
 	int m = (int)PyInt_AsSsize_t(mask);
+#endif
 	if (!m) {
 		PyErr_SetString(PyExc_ValueError, "Mask may not be zero.");
 		return NULL;
@@ -100,7 +110,12 @@ static PyObject* Locale_name(Locale* self, PyObject* mask) {
 	if (name==NULL) {
 		Py_RETURN_NONE;
 	} else 
+#if PY_MAJOR_VERSION >= 3
+		return PyUnicode_FromString(name);
+#else
 		return PyString_FromString(name);
+#endif
+
 #else
 	PyErr_SetString(PyExc_RuntimeError, "This OS does not support querylocalae()");
 	return NULL;
@@ -124,8 +139,7 @@ static PyMethodDef Locale_methods[] = {
 };
 
 static PyTypeObject LocaleType = {
-	PyObject_HEAD_INIT(NULL)
-	0,				/* ob_size */ 
+	PyVarObject_HEAD_INIT(NULL, 0)
 	"xlocale.Locale",		/* tp_name */ 
 	sizeof(Locale),			/* tp_basicsize */ 
 	0,				/* tp_itemsize */ 
@@ -186,11 +200,36 @@ void init_xlocale(PyObject* module) {
 }
 
 
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef moduledef = {
+	PyModuleDef_HEAD_INIT,
+        "xlocale",	// m_name
+        NULL,		// m_doc
+        0,		// m_size
+        NULL,		// m_methods
+        NULL,		// m_slots
+        NULL,		// m_traverse
+        NULL,		// m_clear
+        NULL		// m_free
+};
+
+#endif
+
 PyMODINIT_FUNC
+#if PY_MAJOR_VERSION >= 3
+PyInit_xlocale(void) {
+#else
 initxlocale(void) {
+#endif
 	PyObject *module;
 
-	if ((module=Py_InitModule("xlocale", LanguageMethods))==NULL) {
+#if PY_MAJOR_VERSION >= 3
+	module = PyModule_Create(&moduledef);
+#else
+	module = Py_InitModule("xlocale", LanguageMethods);
+#endif
+
+	if (module==NULL) {
 #if PY_MAJOR_VERSION >= 3
 		return NULL;
 #else
