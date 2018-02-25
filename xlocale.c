@@ -54,9 +54,10 @@ static int Locale_init(Locale* self, PyObject* args, PyObject* kwargs) {
 
 	locale_t loc = newlocale(mask, locale,
 			base!=NULL ? ((Locale*)base)->locale : NULL);
-	if (loc==NULL)
+	if (loc==NULL) {
 		PyErr_SetString(PyExc_RuntimeError, "Error creating new Locale.");
-	else {
+		return -1;
+	} else {
 		if (self->locale!=LC_GLOBAL_LOCALE)
 			freelocale(self->locale);
 		self->locale=loc;

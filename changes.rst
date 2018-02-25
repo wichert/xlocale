@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.3.2 - February 25, 2018
+-------------------------
+
+- Fix handling of exceptions raised when creating a Locale: they are now
+  correctly seen as being raised in the constructor.
+
+
 1.3.1 - February 23, 2018
 -------------------------
 
